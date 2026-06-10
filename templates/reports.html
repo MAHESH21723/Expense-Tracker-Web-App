@@ -1,0 +1,138 @@
+{% extends 'layout.html' %}
+
+{% block title %}Financial Reports - Personal Expense Tracker{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="text-white mb-1 brand-font"><i class="fa-solid fa-chart-pie me-2 text-primary"></i>Financial Reports</h2>
+            <p class="text-secondary mb-0">Detailed analytical summary of your personal cash flow</p>
+        </div>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-glass-secondary">
+            <i class="fa-solid fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<!-- Monthly Summary Card -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="glass-card p-4">
+            <h4 class="text-white mb-3 brand-font">Monthly Financial Summary</h4>
+            <div class="row g-4 align-items-center">
+                <div class="col-md-3 text-center text-md-start border-end border-light">
+                    <p class="text-secondary mb-1">Total Income</p>
+                    <h3 class="text-success brand-font mb-0">₹{{ "{:,.2f}".format(summary.total_income) }}</h3>
+                </div>
+                <div class="col-md-3 text-center text-md-start border-end border-light">
+                    <p class="text-secondary mb-1">Total Expenses</p>
+                    <h3 class="text-danger brand-font mb-0">₹{{ "{:,.2f}".format(summary.total_expense) }}</h3>
+                </div>
+                <div class="col-md-3 text-center text-md-start border-end border-light">
+                    <p class="text-secondary mb-1">Net Savings</p>
+                    <h3 class="text-primary brand-font mb-0">₹{{ "{:,.2f}".format(summary.savings) }}</h3>
+                </div>
+                <div class="col-md-3 text-center">
+                    <p class="text-secondary mb-1">Savings Percentage</p>
+                    <h3 class="text-white brand-font mb-0">{{ "{:.1f}%".format(summary.savings_percentage) }}</h3>
+                    <div class="progress progress-glass mt-2 mx-auto" style="width: 80%;">
+                        <div class="progress-bar progress-bar-indigo" role="progressbar" style="width: {{ summary.savings_percentage }}%;" aria-valuenow="{{ summary.savings_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Category Breakdown List -->
+    <div class="col-lg-5">
+        <div class="glass-card p-4 h-100">
+            <h4 class="text-white mb-4 brand-font"><i class="fa-solid fa-chart-simple me-2 text-primary"></i>Expense Analysis</h4>
+            <p class="text-secondary text-sm mb-4">Breakdown of expenses by category, ordered by highest spend:</p>
+            
+            {% if category_data %}
+                <div class="d-flex flex-column gap-3">
+                    {% for item in category_data %}
+                        <div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-white fw-medium">
+                                    {% set clean_cat = item.category.lower().replace(' ', '') %}
+                                    <i class="fa-solid fa-circle me-2 text-xs" style="color: {% if clean_cat == 'food' %}#fca5a5{% elif clean_cat == 'transport' %}#93c5fd{% elif clean_cat == 'shopping' %}#fbcfe8{% elif clean_cat == 'bills' %}#fbbf24{% elif clean_cat == 'entertainment' %}#d8b4fe{% elif clean_cat == 'education' %}#22d3ee{% elif clean_cat == 'healthcare' %}#5eead4{% else %}#d1d5db{% endif %};"></i>
+                                    {{ item.category }}
+                                </span>
+                                <span class="text-secondary text-sm">
+                                    <strong class="text-white">₹{{ "{:,.2f}".format(item.amount) }}</strong> ({{ "{:.1f}%".format(item.percentage) }})
+                                </span>
+                            </div>
+                            <div class="progress progress-glass">
+                                <div class="progress-bar" role="progressbar" style="width: {{ item.percentage }}%; background: {% if clean_cat == 'food' %}#fca5a5{% elif clean_cat == 'transport' %}#93c5fd{% elif clean_cat == 'shopping' %}#fbcfe8{% elif clean_cat == 'bills' %}#fbbf24{% elif clean_cat == 'entertainment' %}#d8b4fe{% elif clean_cat == 'education' %}#22d3ee{% elif clean_cat == 'healthcare' %}#5eead4{% else %}#d1d5db{% endif %};" aria-valuenow="{{ item.percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5 text-secondary">
+                    <i class="fa-solid fa-tags fs-1 mb-3 text-muted"></i>
+                    <p class="mb-0">No expense records available for analysis.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Category Pie Chart -->
+    <div class="col-lg-7">
+        <div class="glass-card p-4 h-100">
+            <h4 class="text-white mb-3 brand-font"><i class="fa-solid fa-chart-pie me-2 text-primary"></i>Category Distribution</h4>
+            <div class="chart-img-container">
+                {% if category_data %}
+                    <img src="{{ url_for('static', filename='charts/category_pie.png') }}?v={{ timestamp }}" alt="Category Pie Chart" class="chart-img">
+                {% else %}
+                    <div class="text-center text-secondary">
+                        <i class="fa-solid fa-chart-pie fs-1 mb-3 text-muted"></i>
+                        <p class="mb-0">Chart will display once expenses are added.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Income vs Expense Bar Chart -->
+    <div class="col-md-6">
+        <div class="glass-card p-4">
+            <h4 class="text-white mb-3 brand-font"><i class="fa-solid fa-chart-bar me-2 text-primary"></i>Income vs Expense</h4>
+            <div class="chart-img-container">
+                {% if has_data %}
+                    <img src="{{ url_for('static', filename='charts/income_vs_expense.png') }}?v={{ timestamp }}" alt="Income vs Expense Bar Chart" class="chart-img">
+                {% else %}
+                    <div class="text-center text-secondary">
+                        <i class="fa-solid fa-chart-bar fs-1 mb-3 text-muted"></i>
+                        <p class="mb-0">Chart will display once transactions are added.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Trend Line Chart -->
+    <div class="col-md-6">
+        <div class="glass-card p-4">
+            <h4 class="text-white mb-3 brand-font"><i class="fa-solid fa-chart-line me-2 text-primary"></i>Monthly Trend</h4>
+            <div class="chart-img-container">
+                {% if has_data %}
+                    <img src="{{ url_for('static', filename='charts/monthly_trend.png') }}?v={{ timestamp }}" alt="Monthly Trend Line Chart" class="chart-img">
+                {% else %}
+                    <div class="text-center text-secondary">
+                        <i class="fa-solid fa-chart-line fs-1 mb-3 text-muted"></i>
+                        <p class="mb-0">Chart will display once transactions are added.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

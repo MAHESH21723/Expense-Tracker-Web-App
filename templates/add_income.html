@@ -1,0 +1,108 @@
+{% extends 'layout.html' %}
+
+{% block title %}Add Income - Personal Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="glass-card p-4">
+            <div class="text-center mb-4">
+                <div class="d-inline-flex bg-success bg-opacity-10 p-3 rounded-circle border border-success border-opacity-20 mb-3">
+                    <i class="fa-solid fa-circle-arrow-down text-success fs-2"></i>
+                </div>
+                <h3 class="text-white brand-font">Record Income</h3>
+                <p class="text-secondary text-sm">Add your earnings to update your net savings in real-time</p>
+            </div>
+            
+            <form action="{{ url_for('add_income') }}" method="POST" class="needs-validation" novalidate>
+                <!-- Date Input -->
+                <div class="mb-3">
+                    <label for="date" class="form-label text-secondary text-sm">Transaction Date</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0 border-light text-secondary">
+                            <i class="fa-regular fa-calendar-days"></i>
+                        </span>
+                        <input type="date" id="date" name="date" class="form-control form-control-glass border-start-0 ps-0" required>
+                        <div class="invalid-feedback">Please choose a valid transaction date.</div>
+                    </div>
+                </div>
+                
+                <!-- Income Source Select -->
+                <div class="mb-3">
+                    <label for="category" class="form-label text-secondary text-sm">Income Source</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0 border-light text-secondary">
+                            <i class="fa-solid fa-briefcase"></i>
+                        </span>
+                        <select id="category" name="category" class="form-select form-select-glass border-start-0 ps-0" required>
+                            <option value="" disabled selected>Select Source</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Freelancing">Freelancing</option>
+                            <option value="Bonus">Bonus</option>
+                            <option value="Investment Returns">Investment Returns</option>
+                            <option value="Others">Others</option>
+                        </select>
+                        <div class="invalid-feedback">Please select an income source.</div>
+                    </div>
+                </div>
+                
+                <!-- Amount Input -->
+                <div class="mb-3">
+                    <label for="amount" class="form-label text-secondary text-sm">Amount (₹)</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0 border-light text-secondary fw-semibold">
+                            ₹
+                        </span>
+                        <input type="number" id="amount" name="amount" step="0.01" min="0.01" class="form-control form-control-glass border-start-0 ps-0" placeholder="0.00" required>
+                        <div class="invalid-feedback">Amount must be greater than zero.</div>
+                    </div>
+                </div>
+                
+                <!-- Description -->
+                <div class="mb-4">
+                    <label for="description" class="form-label text-secondary text-sm">Description (Optional)</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0 border-light text-secondary align-items-start pt-2">
+                            <i class="fa-regular fa-comment-dots"></i>
+                        </span>
+                        <textarea id="description" name="description" rows="3" class="form-control form-control-glass border-start-0 ps-0" placeholder="E.g., Monthly salary payment, consulting work..."></textarea>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-glass-primary py-2.5">
+                        <i class="fa-solid fa-check me-2"></i>Save Income
+                    </button>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-glass-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Set default date to today
+    document.getElementById('date').valueAsDate = new Date();
+
+    // Bootstrap Form Validation logic
+    (function () {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+{% endblock %}
