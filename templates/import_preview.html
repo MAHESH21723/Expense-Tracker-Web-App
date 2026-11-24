@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block title %}Review import &middot; Expense Tracker{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Review {{ source }} import</h1>
+  <p class="muted">{{ rows|length }} transaction(s) found, {{ new_count }} new.
+    {% if skipped %}{{ skipped }} entr{{ 'y was' if skipped == 1 else 'ies were' }} skipped (failed, cancelled or unreadable).{% endif %}
+    {% if truncated %}Only the first {{ rows|length }} rows are shown.{% endif %}
+    Duplicates are unchecked. Adjust descriptions or categories, then save.</p>
+  <form method="post" action="{{ url_for('import_commit') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="count" value="{{ rows|length }}">
+    <div class="table-wrap">
+    <table>
+      <thead><tr><th>Import</th><th>Date</th><th>Type</th><th>Description</th><th>Category</th><th class="num">Amount</th></tr></thead>
+      <tbody>
+      {% for r in rows %}
+        {% set i = loop.index0 %}
+        <tr>
+          <td><input type="checkbox" name="include-{{ i }}" value="1" {% if not r.duplicate %}checked{% endif %} aria-label="Import row {{ loop.index }}">
+              {% if r.duplicate %}<span class="badge badge-expense">duplicate</span>{% endif %}</td>
+          <td><input type="hidden" name="date-{{ i }}" value="{{ r.date }}">{{ r.date }}</td>
+          <td><input type="hidden" name="type-{{ i }}" value="{{ r.type }}"><span class="badge badge-{{ r.type|lower }}">{{ r.type }}</span></td>
+          <td><input type="text" name="description-{{ i }}" value="{{ r.description }}" maxlength="200"></td>
+          <td><select name="category-{{ i }}">
+            {% for c in categories[r.type] %}<option value="{{ c }}" {% if c == r.category %}selected{% endif %}>{{ c }}</option>{% endfor %}
+          </select></td>
+          <td class="num"><input type="hidden" name="amount-{{ i }}" value="{{ r.amount }}">{{ money(r.amount_paise) }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    <div class="actions">
+      <button class="btn" type="submit">Save selected</button>
+      <a class="btn btn-ghost" href="{{ url_for('import_page') }}">Cancel</a>
+      <a class="btn btn-ghost" href="{{ url_for('import_rules') }}">Edit category rules</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% set verb = 'Edit' if editing else 'Add' %}
+{% block title %}{{ verb }} {{ trans_type|lower }}{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>{{ verb }} {{ trans_type|lower }}</h1>
+  <form method="post" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Date
+      <input type="date" name="date" min="2000-01-01" required value="{{ values.get('date', '') }}">
+    </label>
+    <label>{{ 'Source' if trans_type == 'Income' else 'Category' }}
+      <select name="category" required>
+        <option value="" disabled {% if not values.get('category') %}selected{% endif %}>Select&hellip;</option>
+        {% for c in categories %}
+          <option value="{{ c }}" {% if values.get('category') == c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Amount (&#8377;)
+      <input type="text" inputmode="decimal" name="amount" placeholder="0.00" required value="{{ values.get('amount', '') }}">
+    </label>
+    <label>Description (optional)
+      <input type="text" name="description" maxlength="200" value="{{ values.get('description', '') }}">
+    </label>
+    <div class="actions">
+      <button class="btn btn-{{ 'income' if trans_type == 'Income' else 'expense' }}" type="submit">{{ 'Save changes' if editing else 'Add ' ~ trans_type|lower }}</button>
+      <a class="btn btn-ghost" href="{{ url_for('dashboard') }}">Cancel</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

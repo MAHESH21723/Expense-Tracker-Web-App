@@ -1,0 +1,59 @@
+:root {
+  --bg: #f3f4f6; --card: #ffffff; --text: #1f2937; --muted: #6b7280; --border: #e5e7eb;
+  --primary: #2563eb; --income: #059669; --expense: #dc2626;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #111827; --card: #1f2937; --text: #f3f4f6; --muted: #9ca3af; --border: #374151; --income: #34d399; --expense: #f87171; }
+  img.chart { background: #fff; border-radius: 6px; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+a { color: var(--primary); }
+h1 { font-size: 1.5rem; margin-top: 0; }
+h2 { font-size: 1.1rem; margin-top: 0; }
+.topbar { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--border); }
+.brand { font-weight: 700; font-size: 1.15rem; color: var(--text); text-decoration: none; }
+nav { display: flex; flex-wrap: wrap; gap: 4px; }
+nav a { padding: 6px 12px; border-radius: 6px; color: var(--muted); text-decoration: none; }
+nav a:hover, nav a.active { background: var(--bg); color: var(--text); }
+.container { max-width: 1100px; margin: 0 auto; padding: 16px; }
+.footer { text-align: center; color: var(--muted); font-size: .85rem; padding: 24px 16px; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+.narrow { max-width: 520px; margin-left: auto; margin-right: auto; }
+.center { text-align: center; }
+.muted { color: var(--muted); } .small { font-size: .85rem; margin: -8px 0 12px; }
+.pos { color: var(--income); } .neg { color: var(--expense); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+.stats .card { margin-bottom: 0; }
+.stat { display: flex; flex-direction: column; } .stat strong { font-size: 1.4rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin: 16px 0; }
+.grid.two { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+.grid .card { margin-bottom: 0; }
+img.chart { width: 100%; height: auto; display: block; }
+.flash { padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; border: 1px solid; }
+.flash-success { background: #ecfdf5; border-color: #6ee7b7; color: #065f46; }
+.flash-danger { background: #fef2f2; border-color: #fca5a5; color: #991b1b; }
+form label { display: block; margin-bottom: 12px; font-weight: 500; }
+input, select { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--text); font: inherit; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.filters input, .filters select { width: auto; margin: 0; flex: 1 1 150px; }
+.filters label.inline { display: flex; align-items: center; gap: 8px; margin: 0; }
+.filters label.inline select { margin: 0; }
+.btn { display: inline-block; padding: 8px 14px; border: 1px solid var(--primary); border-radius: 6px; background: var(--primary); color: #fff; font: inherit; text-decoration: none; cursor: pointer; }
+.btn-income { background: var(--income); border-color: var(--income); color: #fff; }
+.btn-expense, .btn-danger { background: var(--expense); border-color: var(--expense); color: #fff; }
+.btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+.btn-small { padding: 3px 9px; font-size: .85rem; }
+.actions { display: flex; gap: 8px; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+td:nth-child(4) { white-space: normal; }
+th { color: var(--muted); font-size: .8rem; text-transform: uppercase; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.row-actions { display: flex; gap: 6px; justify-content: flex-end; }
+.row-actions form { margin: 0; }
+.badge { padding: 2px 8px; border-radius: 999px; font-size: .78rem; font-weight: 600; }
+.badge-income { background: #d1fae5; color: #065f46; } .badge-expense { background: #fee2e2; color: #991b1b; }
+@media (max-width: 600px) { .stat strong { font-size: 1.15rem; } }
+.demo-banner { background: #fef3c7; color: #92400e; text-align: center; padding: 8px 16px; font-size: .9rem; border-bottom: 1px solid #fcd34d; }

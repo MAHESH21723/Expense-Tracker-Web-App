@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}Category rules &middot; Expense Tracker{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Category rules</h1>
+  <p class="muted">During import, a transaction whose description contains a keyword gets that category (the longest matching keyword wins; otherwise &ldquo;Others&rdquo;).</p>
+  <form method="post" class="filters">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="text" name="keyword" placeholder="Keyword, e.g. swiggy" maxlength="40" required>
+    <select name="type" aria-label="Type">{% for t in types %}<option>{{ t }}</option>{% endfor %}</select>
+    <select name="category" aria-label="Category">
+      {% for t in types %}<optgroup label="{{ t }}">{% for c in categories[t] %}<option value="{{ c }}">{{ c }}</option>{% endfor %}</optgroup>{% endfor %}
+    </select>
+    <button class="btn" type="submit">Add / update</button>
+    <a class="btn btn-ghost" href="{{ url_for('import_page') }}">Back to import</a>
+  </form>
+</section>
+<section class="card table-wrap">
+  <table>
+    <thead><tr><th>Keyword</th><th>Type</th><th>Category</th><th></th></tr></thead>
+    <tbody>
+    {% for r in rules %}
+      <tr><td>{{ r.keyword }}</td><td>{{ r.type }}</td><td>{{ r.category }}</td>
+        <td class="row-actions"><form method="post" action="{{ url_for('delete_rule', rule_id=r.id) }}" data-confirm="Delete this rule?">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-small btn-danger" type="submit">Delete</button></form></td></tr>
+    {% else %}
+      <tr><td colspan="4" class="muted">No rules yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

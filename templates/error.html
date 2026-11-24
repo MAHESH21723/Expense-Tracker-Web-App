@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block title %}Error {{ error.code }}{% endblock %}
+{% block content %}
+<section class="card center">
+  <h1>{{ error.code }} &ndash; {{ error.name }}</h1>
+  <p class="muted">{{ error.description }}</p>
+  <a class="btn" href="{{ url_for('dashboard') }}">Back to dashboard</a>
+</section>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block title %}Reports &middot; Expense Tracker{% endblock %}
+{% block content %}
+<section class="card">
+  <form method="get" class="filters">
+    <label class="inline">Period
+      <select name="month">
+        <option value="">All time</option>
+        {% for m in months %}<option value="{{ m }}" {% if month == m %}selected{% endif %}>{{ m }}</option>{% endfor %}
+      </select>
+    </label>
+    <button class="btn" type="submit">Apply</button>
+  </form>
+</section>
+
+<section class="stats">
+  <div class="card stat"><span class="muted">Income</span><strong class="pos">{{ money(summary.income) }}</strong></div>
+  <div class="card stat"><span class="muted">Expenses</span><strong class="neg">{{ money(summary.expense) }}</strong></div>
+  <div class="card stat"><span class="muted">Balance</span><strong class="{{ 'pos' if summary.balance >= 0 else 'neg' }}">{{ money(summary.balance) }}</strong></div>
+  <div class="card stat"><span class="muted">Savings rate</span><strong>{{ '%.1f%%'|format(rate) if rate is not none else 'n/a' }}</strong></div>
+</section>
+
+<section class="grid">
+  <div class="card"><img class="chart" alt="Expenses by category" src="{{ url_for('chart', name='category', month=month) }}"></div>
+  <div class="card"><img class="chart" alt="Monthly expense trend" src="{{ url_for('chart', name='trend') }}"></div>
+  <div class="card"><img class="chart" alt="Income versus expense by month" src="{{ url_for('chart', name='income-expense') }}"></div>
+</section>
+
+<section class="grid two">
+  <div class="card table-wrap">
+    <h2>Expense breakdown{% if month %} ({{ month }}){% endif %}</h2>
+    {% if breakdown %}
+    <table>
+      <thead><tr><th>Category</th><th class="num">Amount</th><th class="num">Share</th></tr></thead>
+      <tbody>{% for b in breakdown %}
+        <tr><td>{{ b.category }}</td><td class="num">{{ money(b.amount) }}</td><td class="num">{{ '%.1f%%'|format(b.pct) }}</td></tr>
+      {% endfor %}</tbody>
+    </table>
+    {% else %}<p class="muted">No expenses for this period.</p>{% endif %}
+  </div>
+  <div class="card table-wrap">
+    <h2>Month by month</h2>
+    {% if monthly %}
+    <table>
+      <thead><tr><th>Month</th><th class="num">Income</th><th class="num">Expense</th><th class="num">Net</th></tr></thead>
+      <tbody>{% for m in monthly|reverse %}
+        <tr><td>{{ m.month }}</td><td class="num pos">{{ money(m.income) }}</td><td class="num neg">{{ money(m.expense) }}</td>
+            <td class="num {{ 'pos' if m.balance >= 0 else 'neg' }}">{{ money(m.balance) }}</td></tr>
+      {% endfor %}</tbody>
+    </table>
+    {% else %}<p class="muted">No transactions yet.</p>{% endif %}
+  </div>
+</section>
+{% endblock %}

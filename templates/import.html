@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}Import &middot; Expense Tracker{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>Import transactions</h1>
+  <p class="muted">Upload an export, review it on the next screen, then choose what to save. Nothing is stored until you confirm.
+     Entries that match an existing transaction (same date, amount and description) are flagged as duplicates.</p>
+  <form method="post" action="{{ url_for('import_preview') }}" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Source
+      <select name="source" required>
+        <option value="googlepay">Google Pay (Google Takeout: .zip, .html, .json or .csv)</option>
+        <option value="bank">Bank statement (.csv)</option>
+      </select>
+    </label>
+    <label>File
+      <input type="file" name="file" accept=".zip,.html,.htm,.json,.csv" required>
+    </label>
+    <div class="actions">
+      <button class="btn" type="submit">Preview</button>
+      <a class="btn btn-ghost" href="{{ url_for('import_rules') }}">Category rules</a>
+    </div>
+  </form>
+  <p class="muted small">Account and phone numbers in descriptions are masked (last 4 digits kept). Files are processed in memory and not kept.</p>
+</section>
+{% endblock %}

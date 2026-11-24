@@ -1,0 +1,4 @@
+Time,Transaction ID,Description,Product,Payment method,Status,Amount
+"12 Nov 2026, 19:42:10 IST",CICAgOZZZZ0001,Paid to Sample Cafe,Google Pay,Bank Account XXXXXXXX1234,Completed,₹250.00
+"11 Nov 2026, 09:05:00 IST",CICAgOZZZZ0002,Received from Alice Example,Google Pay,Bank Account XXXXXXXX1234,Completed,"₹1,500.50"
+"09 Nov 2026, 10:00:00 IST",CICAgOZZZZ0003,Paid to Demo Mart,Google Pay,Bank Account XXXXXXXX1234,Failed,₹999.00

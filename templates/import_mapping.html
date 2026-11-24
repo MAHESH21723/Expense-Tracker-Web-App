@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block title %}Map columns &middot; Expense Tracker{% endblock %}
+{% block content %}
+{% set labels = {'date': 'Date', 'description': 'Description / narration', 'debit': 'Debit / withdrawal',
+                 'credit': 'Credit / deposit', 'amount': 'Single amount column', 'drcr': 'Dr/Cr marker column'} %}
+{% set width = table|map('length')|max %}
+<section class="card">
+  <h1>Map the columns</h1>
+  <p class="muted">Pick which column holds each value. You need a date, a description and either debit/credit columns or a single amount column.</p>
+  <form method="post" action="{{ url_for('import_preview') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="source" value="bank">
+    <textarea name="csv_text" hidden>{{ text }}</textarea>
+    <label>Header row
+      <select name="header_row">
+        {% for r in table[:30] %}<option value="{{ loop.index0 }}" {% if loop.index0 == header_row %}selected{% endif %}>Row {{ loop.index }}: {{ r|join(' | ')|truncate(60) }}</option>{% endfor %}
+      </select>
+    </label>
+    <div class="filters">
+      {% for f in fields %}
+      <label class="inline">{{ labels[f] }}
+        <select name="map_{{ f }}">
+          <option value="">(none)</option>
+          {% for i in range(width) %}
+            <option value="{{ i }}" {% if selected.get(f) == i %}selected{% endif %}>Column {{ i + 1 }}{% if table[header_row] and i < table[header_row]|length %}: {{ table[header_row][i]|truncate(25) }}{% endif %}</option>
+          {% endfor %}
+        </select>
+      </label>
+      {% endfor %}
+    </div>
+    <p class="muted small">Sample rows:</p>
+    <div class="table-wrap">
+      <table><tbody>
+        {% for r in table[:6] %}<tr>{% for c in r %}<td>{{ c|truncate(30) }}</td>{% endfor %}</tr>{% endfor %}
+      </tbody></table>
+    </div>
+    <div class="actions"><button class="btn" type="submit">Preview</button>
+      <a class="btn btn-ghost" href="{{ url_for('import_page') }}">Cancel</a></div>
+  </form>
+</section>
+{% endblock %}

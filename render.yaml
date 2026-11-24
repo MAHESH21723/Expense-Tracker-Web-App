@@ -1,0 +1,19 @@
+# Render blueprint: one free web service. The filesystem is ephemeral, so the
+# SQLite database (and the demo data seeded into it) resets on every restart.
+services:
+  - type: web
+    name: expense-tracker
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn "app:create_app()" --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEMO_DATA
+        value: "1"
+      - key: EXPENSE_DB
+        value: /tmp/expense_tracker.db
