@@ -4,7 +4,7 @@ A personal expense and income tracker built with **Python and Flask**. It stores
 
 ## Live demo
 
-Live demo: (link added after first deploy)
+**Live demo: [https://expense-tracker-06au.onrender.com](https://expense-tracker-06au.onrender.com)** (free hosting: the first visit after a quiet spell can take up to a minute to wake up)
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/MAHESH21723/Expense-Tracker-Web-App)
 
